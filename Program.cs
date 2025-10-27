@@ -1,5 +1,11 @@
 var builder = WebApplication.CreateBuilder(args);
 
+// Carregar configurações do appsettings.json
+builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+
+// Sobrescrever com variáveis de ambiente (segredos do Replit)
+builder.Configuration.AddEnvironmentVariables();
+
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddHttpClient();

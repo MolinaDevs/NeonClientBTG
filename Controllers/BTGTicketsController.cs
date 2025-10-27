@@ -41,8 +41,9 @@ public class BTGTicketsController : ControllerBase
             var urlBuilder = new StringBuilder();
             urlBuilder.Append(_authUrl.TrimEnd('/')).Append("/oauth2/token");
 
-            string appId = _configuration["BTG:AppId"] ?? "SEU_APP_ID";
-            string secret = _configuration["BTG:Secret"] ?? "SEU_SECRET";
+            // Tentar pegar das variáveis de ambiente primeiro (Replit Secrets)
+            string appId = _configuration["BTG_CLIENT_ID"] ?? _configuration["BTG:AppId"] ?? "SEU_APP_ID";
+            string secret = _configuration["BTG_CLIENT_SECRET"] ?? _configuration["BTG:Secret"] ?? "SEU_SECRET";
             string credentials = $"{appId}:{secret}";
             string base64Credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(credentials));
 
