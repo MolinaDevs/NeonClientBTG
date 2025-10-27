@@ -1,0 +1,6 @@
+@BTGTicketsAPI_HostAddress = http://localhost:5007
+
+GET {{BTGTicketsAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
