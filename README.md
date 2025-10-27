@@ -1,11 +1,11 @@
-# BTG Tickets WS - API Intermediária
+# BTG Tickets API - API Intermediária
 
-API intermediária em C# ASP.NET Web API para integração com BTG Tickets V2, seguindo a mesma arquitetura do projeto Neon.
+API intermediária em C# ASP.NET Core Web API (.NET 8) para integração com BTG Tickets V2, seguindo a mesma arquitetura do projeto Neon.
 
 ## Estrutura do Projeto
 
 ```
-BTGTicketsWS/
+BTGTicketsAPI/
 ├── Controllers/
 │   └── BTGTicketsController.cs    # Controller principal com todos os endpoints
 ├── Models/
@@ -17,76 +17,83 @@ BTGTicketsWS/
 │       ├── TicketAttributesResponse.cs       # Response de atributos
 │       ├── CreateAttemptTicketRequest.cs     # Request para tentativa discador
 │       └── BasicRequest.cs                   # Request básico
-├── App_Start/
-│   └── WebApiConfig.cs             # Configuração da Web API
-├── Properties/
-│   └── AssemblyInfo.cs             # Informações do assembly
-├── Web.config                       # Configurações do aplicativo
-├── Global.asax                      # Ponto de entrada da aplicação
-├── Global.asax.cs
-├── packages.config                  # Pacotes NuGet
-└── BTGTicketsWS.csproj             # Arquivo do projeto
+├── appsettings.json                # Configurações (ambiente, credenciais, URLs)
+├── Program.cs                      # Ponto de entrada da aplicação
+└── BTGTicketsAPI.csproj           # Arquivo do projeto
 ```
 
 ## Endpoints Disponíveis
 
 ### Autenticação
-- **POST** `/btg/autenticacao` - Gera token de acesso OAuth2 (duração: 1h)
+- **POST** `/BTGTickets/autenticacao` - Gera token de acesso OAuth2 (duração: 1h)
 
 ### Tickets
-- **POST** `/btg/tickets/attributes` - Busca atributos dos tickets (canais, tipos, códigos de terminação)
-- **POST** `/btg/tickets/create` - Cria um novo ticket de atendimento
-- **POST** `/btg/tickets/contract/add` - Adiciona contrato ao ticket
-- **POST** `/btg/tickets/close` - Encerra ticket de atendimento
+- **GET** `/BTGTickets/tickets/attributes` - Busca atributos dos tickets (canais, tipos, códigos de terminação)
+- **POST** `/BTGTickets/tickets/create` - Cria um novo ticket de atendimento
+- **POST** `/BTGTickets/tickets/contract/add` - Adiciona contrato ao ticket
+- **PUT** `/BTGTickets/tickets/close` - Encerra ticket de atendimento
 
 ### Attempt Tickets (Tentativa Discador)
-- **POST** `/btg/tickets/attempt/create` - Cria tentativa de discador
-- **POST** `/btg/tickets/attempt/batch` - Cria tentativas em lote
+- **POST** `/BTGTickets/tickets/attempt/create` - Cria tentativa de discador
+- **POST** `/BTGTickets/tickets/attempt/batch` - Cria tentativas em lote
 
 ## Configuração
 
 ### 1. Credenciais BTG
-Edite o arquivo `Web.config` e configure suas credenciais:
 
-```xml
-<appSettings>
-  <add key="BTG_APP_ID" value="SEU_APP_ID" />
-  <add key="BTG_SECRET" value="SEU_SECRET" />
-</appSettings>
-```
+Edite o arquivo `appsettings.json` e configure suas credenciais:
 
-Ou edite diretamente no `BTGTicketsController.cs` no método `AutenticacaoAsync()`:
-
-```csharp
-string credentials = "SEU_APP_ID:SEU_SECRET";
-```
-
-### 2. Ambiente
-Por padrão, o projeto está configurado para o ambiente de **Homologação (UAT)**:
-- URL: `https://api-everest-uat.btgpactual.com`
-
-Para usar **Produção**, altere no `BTGTicketsController.cs`:
-
-```csharp
-public string _UrlBase = "https://api-everest-prd.btgpactual.com";
-```
-
-### 3. Proxy (Opcional)
-Se necessário usar proxy, configure no `BTGTicketsController.cs`:
-
-```csharp
-_handler = new HttpClientHandler
+```json
 {
-    Proxy = proxy,
-    UseProxy = true // Mude para true e configure o proxy
-};
+  "BTG": {
+    "Environment": "UAT",
+    "AppId": "SEU_APP_ID",
+    "Secret": "SEU_SECRET",
+    "CreatedBy": "OPERADOR_SISTEMA",
+    "AuthUrl": "https://btg-agreement.auth.sa-east-1.amazoncognito.com",
+    "ApiUrlUAT": "https://api-everest-uat.btgpactual.com",
+    "ApiUrlPRD": "https://api-everest-prd.btgpactual.com"
+  }
+}
 ```
+
+### 2. Selecionar Ambiente (UAT ou PRD)
+
+**IMPORTANTE**: Você NÃO precisa alterar código para trocar entre ambientes!
+
+Para usar **Homologação (UAT)** - recomendado para testes:
+```json
+"Environment": "UAT"
+```
+
+Para usar **Produção (PRD)**:
+```json
+"Environment": "PRD"
+```
+
+A API automaticamente seleciona a URL correta baseada nesta configuração.
+
+### 3. Configurar Operador
+
+O campo `CreatedBy` será enviado automaticamente como header em todos os endpoints que criam/modificam tickets:
+
+```json
+"CreatedBy": "NOME_DO_OPERADOR"
+```
+
+### 4. Executar a Aplicação
+
+```bash
+dotnet run
+```
+
+A API estará disponível em: `http://localhost:5000`
 
 ## Exemplos de Uso
 
 ### 1. Autenticação
 ```http
-POST /btg/autenticacao
+POST /BTGTickets/autenticacao
 Content-Type: application/json
 
 {}
@@ -102,9 +109,24 @@ Content-Type: application/json
 }
 ```
 
-### 2. Criar Ticket
+### 2. Buscar Atributos
 ```http
-POST /btg/tickets/create
+GET /BTGTickets/tickets/attributes
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**Response:**
+```json
+{
+  "channels": ["PHONE", "EMAIL"],
+  "types": ["INBOUND", "OUTBOUND"],
+  "terminationCodes": ["AE", "GA", "TT", "GB"]
+}
+```
+
+### 3. Criar Ticket
+```http
+POST /BTGTickets/tickets/create
 Content-Type: application/json
 
 {
@@ -117,9 +139,9 @@ Content-Type: application/json
 }
 ```
 
-### 3. Adicionar Contrato
+### 4. Adicionar Contrato
 ```http
-POST /btg/tickets/contract/add
+POST /BTGTickets/tickets/contract/add
 Content-Type: application/json
 
 {
@@ -133,9 +155,9 @@ Content-Type: application/json
 }
 ```
 
-### 4. Encerrar Ticket
+### 5. Encerrar Ticket
 ```http
-POST /btg/tickets/close
+PUT /BTGTickets/tickets/close
 Content-Type: application/json
 
 {
@@ -166,29 +188,65 @@ Este projeto segue a mesma arquitetura do NeonController:
 - Controllers para gerenciar rotas e lógica de negócio
 - Models para estruturar requests/responses
 - HttpClient para chamadas HTTP assíncronas
+- Configuração via appsettings.json (não hardcoded)
 - Tratamento de erros consistente
-- Serialização JSON com Newtonsoft.Json
+- Serialização JSON com System.Text.Json
 
 ## Tecnologias
 
-- ASP.NET Web API (.NET Framework 4.7.2)
-- C# 7.3
-- Newtonsoft.Json 13.0.3
-- Microsoft.AspNet.WebApi 5.2.9
+- ASP.NET Core Web API (.NET 8)
+- C# 12
+- System.Text.Json (built-in)
 - HttpClient para requests HTTP
+- Configuração via appsettings.json
 
 ## Observações Importantes
 
-1. **Segurança**: Nunca commitar credenciais no código. Use variáveis de ambiente ou configurações seguras.
+1. **Segurança**: As credenciais estão em `appsettings.json`. Para produção, use:
+   - Variáveis de ambiente
+   - Azure Key Vault
+   - User Secrets (desenvolvimento local)
+   - NUNCA commite credenciais reais no repositório
+
 2. **Token**: O Bearer Token expira em 1 hora. Implemente cache ou renovação automática se necessário.
-3. **Operador**: O header `createdBy` deve ser preenchido com o nome real do operador.
-4. **Ambiente**: Sempre teste em UAT antes de usar em produção.
+
+3. **Header createdBy**: É configurável via `appsettings.json` e enviado automaticamente pela API em todos os endpoints que modificam dados.
+
+4. **Ambiente**: 
+   - SEMPRE teste em UAT antes de usar em produção
+   - Troque entre ambientes apenas alterando `"Environment": "UAT"` ou `"Environment": "PRD"` no appsettings.json
+   - NÃO é necessário alterar código para mudar de ambiente
+
+5. **Endpoints BTG**: 
+   - Criar Ticket: POST `/v2/btg-tickets/customers/{document}/tickets`
+   - Attempt Ticket: POST `/v2/btg-tickets/customers/{document}/attempt-tickets`
+   - Adicionar Contrato: POST `/v2/btg-tickets/customers/{document}/attempt-tickets/{ticketId}/contracts`
+   - Encerrar Ticket: PUT `/v2/btg-tickets/customers/{document}/attempt-tickets/{ticketId}/close`
+   - Buscar Atributos: GET `/v2/btg-tickets/attempt-tickets/attributes`
 
 ## Próximos Passos
 
-- [ ] Implementar cache de token
+- [ ] Implementar cache de token OAuth2
 - [ ] Adicionar retry logic para falhas de rede
-- [ ] Criar logging detalhado
-- [ ] Implementar testes unitários
+- [ ] Criar logging detalhado com Serilog
+- [ ] Implementar testes unitários e de integração
 - [ ] Adicionar validações de negócio
 - [ ] Documentar com Swagger/OpenAPI
+- [ ] Migrar credenciais para User Secrets ou Azure Key Vault
+- [ ] Implementar health checks
+- [ ] Adicionar telemetria e métricas
+
+## Migração de .NET Framework para .NET 8
+
+Esta API foi migrada de .NET Framework 4.7.2 para .NET 8 para aproveitar:
+- Cross-platform (Linux, macOS, Windows)
+- Performance superior
+- Suporte a recursos modernos do C#
+- Melhor integração com containers
+- Long-term support (LTS)
+
+As principais diferenças da migração:
+- `Web.config` → `appsettings.json`
+- `Global.asax` → `Program.cs`
+- `Newtonsoft.Json` → `System.Text.Json`
+- ASP.NET Web API → ASP.NET Core Web API
