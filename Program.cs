@@ -44,8 +44,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Página padrão (redirecionar para exemplo de integração)
-app.MapGet("/", () => Results.Redirect("/btg-tickets-integration.html"));
+// Página padrão (redirecionar para index)
+app.MapGet("/", () => Results.Redirect("/index.html"));
 
 app.MapControllers();
 

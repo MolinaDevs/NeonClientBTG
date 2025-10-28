@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>BTG Tickets API - Funcionando!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            background: white;
+            color: #333;
+            padding: 40px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        h1 { color: #667eea; }
+        .success { color: #10b981; font-size: 48px; margin: 20px 0; }
+        a {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+            font-weight: bold;
+        }
+        a:hover { background: #5568d3; }
+        .info {
+            background: #f0f9ff;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success">✅</div>
+        <h1>Arquivos Estáticos Funcionando!</h1>
+        <p>Se você está vendo esta página, significa que o <code>app.UseStaticFiles()</code> está configurado corretamente.</p>
+        
+        <div style="margin: 30px 0;">
+            <a href="/teste-simples.html">📋 Ir para Testes BTG</a>
+            <a href="/btg-tickets-integration.html">🔗 Exemplo Completo</a>
+            <a href="/swagger">📚 Swagger API</a>
+        </div>
+
+        <div class="info">
+            <h3>🎯 Próximos Passos:</h3>
+            <ol style="text-align: left;">
+                <li>Clique em "Ir para Testes BTG" acima</li>
+                <li>Teste a criação de tickets</li>
+                <li>Use o código de integração no SALAJuris</li>
+            </ol>
+        </div>
+
+        <div class="info" style="background: #fef3c7; margin-top: 20px;">
+            <h3>⚙️ API Status:</h3>
+            <p><strong>Porta:</strong> 5000</p>
+            <p><strong>Ambiente:</strong> Development</p>
+            <p><strong>Swagger:</strong> <a href="/swagger" style="padding: 5px 10px; font-size: 14px;">/swagger</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Testar se JavaScript está funcionando
+        console.log('✅ Arquivos JavaScript carregando corretamente!');
+        console.log('API Base URL: http://localhost:5000');
+    </script>
+</body>
+</html>
