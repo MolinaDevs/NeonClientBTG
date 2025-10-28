@@ -47,7 +47,7 @@ public class BTGTicketsController : ControllerBase
             string credentials = $"{appId}:{secret}";
             string base64Credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(credentials));
 
-            using var request = new HttpRequestMessage(HttpMethod.Post, $"{urlBuilder}?grant_type=client_credentials");
+            using var request = new HttpRequestMessage(HttpMethod.Post, urlBuilder.ToString());
             request.Headers.Add("Authorization", $"Basic {base64Credentials}");
             request.Content = new FormUrlEncodedContent(new[]
             {
