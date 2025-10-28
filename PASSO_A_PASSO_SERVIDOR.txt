@@ -1,0 +1,265 @@
+╔═══════════════════════════════════════════════════════════╗
+║         PASSO A PASSO - SERVIDOR DO TRABALHO             ║
+║     (Onde o IP está liberado para API BTG)               ║
+╚═══════════════════════════════════════════════════════════╝
+
+Autor: Murilo Molina (murilo.molina@gmail.com)
+
+═══════════════════════════════════════════════════════════
+
+📥 PASSO 1: TRANSFERIR PROJETO PARA O SERVIDOR
+═══════════════════════════════════════════════════════════
+
+1. Faça download de TODO este projeto
+2. Copie para o servidor (exemplo: C:\BTGTicketsAPI)
+3. Certifique-se de ter TODOS os arquivos:
+   ✓ Controllers/
+   ✓ Models/
+   ✓ Properties/
+   ✓ *.cs, *.json, *.md, *.ps1
+
+═══════════════════════════════════════════════════════════
+
+⚙️ PASSO 2: INSTALAR .NET 8 SDK (se não tiver)
+═══════════════════════════════════════════════════════════
+
+1. Acesse: https://dotnet.microsoft.com/download/dotnet/8.0
+2. Baixe: .NET 8.0 SDK (x64)
+3. Execute o instalador
+4. Após instalar, abra PowerShell e teste:
+   
+   dotnet --version
+   
+   Deve mostrar: 8.0.xxx
+
+═══════════════════════════════════════════════════════════
+
+🔐 PASSO 3: CONFIGURAR CREDENCIAIS BTG
+═══════════════════════════════════════════════════════════
+
+Abra PowerShell COMO ADMINISTRADOR e execute:
+
+[System.Environment]::SetEnvironmentVariable('BTG_CLIENT_ID', '4fvga0jg4u8ui9f5p6e1ijs5mp', 'Machine')
+
+[System.Environment]::SetEnvironmentVariable('BTG_CLIENT_SECRET', '121u3fnttukef8jankq12sn4sf7mg90mcpsgvm7ktn61qni032g5', 'Machine')
+
+Verifique se funcionou:
+
+[System.Environment]::GetEnvironmentVariable('BTG_CLIENT_ID', 'Machine')
+
+Deve retornar: 4fvga0jg4u8ui9f5p6e1ijs5mp
+
+IMPORTANTE: Feche e abra o PowerShell novamente!
+
+═══════════════════════════════════════════════════════════
+
+📝 PASSO 4: EDITAR CONFIGURAÇÃO (OPCIONAL)
+═══════════════════════════════════════════════════════════
+
+Abra o arquivo: appsettings.json
+
+Altere o campo "CreatedBy" para seu nome:
+
+{
+  "BTG": {
+    "Environment": "UAT",
+    "CreatedBy": "SEU_NOME_COMPLETO",
+    ...
+  }
+}
+
+Salve o arquivo.
+
+═══════════════════════════════════════════════════════════
+
+🚀 PASSO 5: COMPILAR E EXECUTAR
+═══════════════════════════════════════════════════════════
+
+Opção A - Automático (Recomendado):
+────────────────────────────────────
+
+No PowerShell, na pasta do projeto:
+
+  .\setup-servidor.ps1
+
+Este script faz tudo automaticamente:
+- Verifica .NET SDK
+- Verifica variáveis de ambiente
+- Restaura dependências
+- Compila o projeto
+- Exibe resumo
+
+
+Opção B - Manual:
+─────────────────
+
+No PowerShell, na pasta do projeto:
+
+  cd C:\BTGTicketsAPI
+  
+  dotnet restore
+  
+  dotnet build --configuration Release
+  
+  dotnet run
+
+═══════════════════════════════════════════════════════════
+
+🧪 PASSO 6: TESTAR A API
+═══════════════════════════════════════════════════════════
+
+Aguarde até ver:
+  "Now listening on: http://[::]:5000"
+  "Application started."
+
+1. Abra o navegador do servidor
+2. Acesse: http://localhost:5000/swagger
+3. Você verá a interface Swagger com todos os endpoints
+
+
+TESTE 1: Autenticação
+─────────────────────
+
+1. Localize: POST /BTGTickets/autenticacao
+2. Clique em "Try it out"
+3. Clique em "Execute"
+
+✅ SUCESSO: Retorna um access_token
+❌ ERRO 403: IP não liberado (improvável no servidor)
+
+
+TESTE 2: Buscar Atributos
+──────────────────────────
+
+1. Copie o access_token do teste anterior
+2. Localize: GET /BTGTickets/tickets/attributes
+3. No campo "Authorization", cole:
+   Bearer SEU_TOKEN_AQUI
+4. Execute
+
+✅ SUCESSO: Lista de canais, tipos, códigos
+
+
+TESTE 3: Criar Ticket
+─────────────────────
+
+1. Localize: POST /BTGTickets/tickets/create
+2. Cole este JSON (ajuste o AccessToken):
+
+{
+  "AccessToken": "COLE_SEU_TOKEN_AQUI",
+  "Document": "12345678901",
+  "phoneAreaCode": "11",
+  "phoneNumber": "987654321",
+  "channel": "PHONE",
+  "type": "OUTBOUND"
+}
+
+3. Execute
+
+✅ SUCESSO: Retorna ticketId
+
+═══════════════════════════════════════════════════════════
+
+📊 PASSO 7: TESTES COMPLETOS
+═══════════════════════════════════════════════════════════
+
+Execute TODOS os testes conforme documentado em:
+
+  TESTES_FUNCIONAIS.md
+
+Checklist:
+  [ ] Teste 1 - Autenticação ✓
+  [ ] Teste 2 - Buscar Atributos ✓
+  [ ] Teste 3 - Criar Ticket ✓
+  [ ] Teste 4 - Adicionar Contrato ✓
+  [ ] Teste 5 - Encerrar Ticket ✓
+  [ ] Teste 6 - Attempt Ticket ✓
+  [ ] Teste 7 - Batch Attempts ✓
+
+═══════════════════════════════════════════════════════════
+
+🆘 PROBLEMAS COMUNS
+═══════════════════════════════════════════════════════════
+
+Erro: "dotnet command not found"
+→ .NET SDK não instalado ou não está no PATH
+→ Reinstale o .NET SDK e reinicie o PowerShell
+
+Erro: "Port 5000 already in use"
+→ Outra aplicação usando a porta
+→ Execute: netstat -ano | findstr :5000
+→ Encerre o processo: taskkill /PID <PID> /F
+
+Erro: "403 Forbidden" ao autenticar
+→ IP não liberado pela BTG (improvável neste servidor)
+→ Credenciais incorretas
+→ Verifique as variáveis de ambiente
+
+Erro: "Variáveis de ambiente não encontradas"
+→ PowerShell não reiniciado após configuração
+→ Feche e abra novamente o PowerShell
+→ Ou configure na sessão atual:
+   $env:BTG_CLIENT_ID = "4fvga0jg4u8ui9f5p6e1ijs5mp"
+   $env:BTG_CLIENT_SECRET = "121u3fnttukef8jankq12sn4sf7mg90mcpsgvm7ktn61qni032g5"
+
+═══════════════════════════════════════════════════════════
+
+📚 DOCUMENTAÇÃO COMPLETA
+═══════════════════════════════════════════════════════════
+
+README.md
+  → Visão geral completa do projeto
+
+INSTALACAO_SERVIDOR.md
+  → Guia detalhado de instalação
+  → Deploy IIS, Serviço Windows, Linux
+  → 10+ páginas de documentação
+
+TESTES_FUNCIONAIS.md
+  → Roteiro completo de testes
+  → 7 testes funcionais detalhados
+  → Exemplos PowerShell e cURL
+
+GUIA_DEPLOY_SERVIDOR.md
+  → Guia rápido de deploy
+  → 15-30 minutos
+
+RESUMO_PROJETO.txt
+  → Resumo executivo completo
+
+═══════════════════════════════════════════════════════════
+
+✅ CHECKLIST FINAL
+═══════════════════════════════════════════════════════════
+
+Antes de testar:
+  [ ] Projeto copiado para o servidor
+  [ ] .NET 8 SDK instalado
+  [ ] Variáveis de ambiente configuradas
+  [ ] PowerShell reiniciado
+  [ ] appsettings.json editado (CreatedBy)
+
+Durante os testes:
+  [ ] dotnet run executado sem erros
+  [ ] Swagger acessível (http://localhost:5000/swagger)
+  [ ] Autenticação funcionando (token recebido)
+  [ ] Criar ticket funcionando (ticketId recebido)
+  [ ] Todos os 7 testes executados
+
+Após validação:
+  [ ] Documentar resultados
+  [ ] Configurar para produção (se necessário)
+  [ ] Deploy no IIS (opcional)
+
+═══════════════════════════════════════════════════════════
+
+⏱️ TEMPO ESTIMADO: 15-30 minutos
+
+═══════════════════════════════════════════════════════════
+
+Desenvolvido por: Murilo Molina
+E-mail: murilo.molina@gmail.com
+Data: Outubro 2025
+
+═══════════════════════════════════════════════════════════

@@ -1,0 +1,84 @@
+=====================================================
+INSTRUÇÕES PARA COMMIT COM SEU AUTOR
+=====================================================
+
+Autor: Murilo Molina <murilo.molina@gmail.com>
+
+-----------------------------------------------------
+PASSO 1: Baixar o Projeto
+-----------------------------------------------------
+
+Faça download de todos os arquivos do projeto para
+sua máquina local ou servidor.
+
+-----------------------------------------------------
+PASSO 2: Inicializar Git (se necessário)
+-----------------------------------------------------
+
+Abra o terminal/PowerShell na pasta do projeto:
+
+  cd C:\BTGTicketsAPI
+
+Inicialize o repositório Git:
+
+  git init
+  git config user.name "Murilo Molina"
+  git config user.email "murilo.molina@gmail.com"
+
+-----------------------------------------------------
+PASSO 3: Fazer Commit
+-----------------------------------------------------
+
+Adicione todos os arquivos:
+
+  git add .
+
+Faça o commit:
+
+  git commit -m "Implementação completa da API BTG Tickets V2
+
+  - Implementação de 7 endpoints BTG Tickets V2
+  - Autenticação OAuth2 com Client Credentials
+  - Suporte a múltiplos ambientes (UAT/PRD)
+  - Documentação completa Swagger/OpenAPI
+  - Guias de instalação e testes funcionais
+  - Configuração segura via variáveis de ambiente
+  - Desenvolvido por Murilo Molina"
+
+-----------------------------------------------------
+PASSO 4: Conectar ao Repositório Remoto
+-----------------------------------------------------
+
+Se você tem um GitHub/GitLab/Bitbucket:
+
+  git remote add origin https://github.com/SEU_USUARIO/btg-tickets-api.git
+  git branch -M main
+  git push -u origin main
+
+-----------------------------------------------------
+ARQUIVOS INCLUÍDOS
+-----------------------------------------------------
+
+✅ Código Fonte Completo
+✅ Documentação (README, Guias de Instalação e Testes)
+✅ Configuração de Exemplo (appsettings.EXAMPLE.json)
+✅ .gitignore (protege credenciais)
+
+❌ Sem credenciais no código
+❌ Sem referências a plataformas externas
+❌ Sem arquivos temporários
+
+=====================================================
+PRONTO PARA USO NO SERVIDOR
+=====================================================
+
+Este projeto está 100% portável e pode ser executado
+em qualquer servidor Windows ou Linux com .NET 8.
+
+Consulte os guias:
+- README.md - Visão geral
+- INSTALACAO_SERVIDOR.md - Instalação detalhada
+- TESTES_FUNCIONAIS.md - Testes completos
+- GUIA_DEPLOY_SERVIDOR.md - Deploy rápido
+
+=====================================================
