@@ -1,0 +1,135 @@
+================================================================================
+  BTG TICKETS V2 API - INTEGRAÇÃO SALAJuris
+  Desenvolvedor: Murilo Molina (murilo.molina@gmail.com)
+  Data: Outubro 2025
+================================================================================
+
+📋 INÍCIO RÁPIDO:
+
+1. Abra o arquivo: COMO_BAIXAR_E_USAR.md
+2. Siga o passo a passo
+3. Em 10 minutos estará funcionando!
+
+================================================================================
+
+📁 ESTRUTURA DO PROJETO:
+
+BTGTicketsAPI/
+├── wwwroot/                    ← Arquivos de integração (HTML, CSS, JS)
+│   ├── css/
+│   │   └── btg-tickets.css
+│   ├── js/
+│   │   └── btg-tickets-client.js
+│   ├── index.html
+│   ├── teste-simples.html
+│   └── btg-tickets-integration.html
+├── Controllers/
+│   └── BTGTicketsController.cs  ← API endpoints
+├── Models/
+│   └── BTGTicketModels.cs       ← Modelos de dados
+├── Program.cs                   ← Configuração principal
+└── appsettings.json             ← Credenciais BTG
+
+================================================================================
+
+🚀 COMO USAR:
+
+1. BAIXAR:
+   - Baixe este projeto como ZIP
+   - Extraia em uma pasta
+
+2. ABRIR NO VISUAL STUDIO:
+   - Abra o arquivo: BTGTicketsAPI.csproj
+   - Restaure os pacotes NuGet
+
+3. RODAR:
+   - Pressione F5
+   - Acesse: http://localhost:5000/
+
+4. TESTAR:
+   - http://localhost:5000/              ← Página inicial
+   - http://localhost:5000/teste-simples.html  ← Testes
+   - http://localhost:5000/swagger       ← API docs
+
+================================================================================
+
+📚 DOCUMENTAÇÃO:
+
+ESSENCIAIS:
+  ✅ COMO_BAIXAR_E_USAR.md           ← COMECE AQUI!
+  ✅ GUIA_INTEGRACAO_SALAJURIS.md    ← Como integrar no SALAJuris
+  ✅ RESUMO_INTEGRACAO.md            ← Visão geral
+
+AVANÇADOS:
+  - GUIA_DEPLOY_SERVIDOR.md          ← Deploy em servidor Windows
+  - COMO_TESTAR_NO_VISUAL_STUDIO.md  ← Troubleshooting
+  - TESTES_FUNCIONAIS.md             ← Casos de teste
+
+================================================================================
+
+🎯 INTEGRAÇÃO COM SALAJURIS:
+
+Depois de rodar a API (passo 3 acima):
+
+1. Mantenha a API rodando na porta 5000
+2. Copie os arquivos de wwwroot/css/ e wwwroot/js/ para o SALAJuris
+3. Siga o GUIA_INTEGRACAO_SALAJURIS.md
+
+================================================================================
+
+⚙️ REQUISITOS:
+
+- Windows 10/11 ou Windows Server 2016+
+- .NET 8.0 SDK
+- Visual Studio 2022 (ou superior)
+- Porta 5000 disponível
+
+================================================================================
+
+✅ CHECKLIST RÁPIDO:
+
+[ ] Baixei e extraí o projeto
+[ ] Abri no Visual Studio
+[ ] Restaurei os pacotes NuGet
+[ ] Executei (F5)
+[ ] Acessei http://localhost:5000/
+[ ] Vi a página roxa de boas-vindas
+[ ] Testei em /teste-simples.html
+[ ] Funcionou!
+
+================================================================================
+
+🔑 CREDENCIAIS BTG:
+
+Já estão configuradas no appsettings.json:
+- Client ID: 4fvga0jg4u8ui9f5p6e1ijs5mp
+- Client Secret: 121u3fnttukef8jankq12sn4sf7mg90mcpsgvm7ktn61qni032g5
+- Ambiente: UAT (homologação)
+
+================================================================================
+
+⚠️ IMPORTANTE:
+
+- Erro 403 da API BTG é NORMAL se você está em casa
+  → A API só funciona com IP liberado pela BTG
+  → No servidor da empresa funcionará normalmente
+
+- Arquivos DEVEM estar em wwwroot/
+  → Se não estiverem, arraste para dentro de wwwroot/
+
+================================================================================
+
+📞 SUPORTE:
+
+Desenvolvedor: Murilo Molina
+E-mail: murilo.molina@gmail.com
+
+Qualquer dúvida, consulte os arquivos .md ou entre em contato!
+
+================================================================================
+
+✅ PROJETO 100% PRONTO PARA USO!
+
+Abra: COMO_BAIXAR_E_USAR.md e siga o passo a passo.
+
+================================================================================
