@@ -1,0 +1,267 @@
+/* BTG Tickets Integration - Styles */
+/* Compatível com SALAJuris */
+
+.btg-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.btg-modal-content {
+    background-color: #f8f9fa;
+    margin: 5% auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 700px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.btg-modal-header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    padding: 20px;
+    color: white;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btg-modal-header h3 {
+    margin: 0;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+.btg-close {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    padding: 0;
+    line-height: 1;
+}
+
+.btg-close:hover,
+.btg-close:focus {
+    color: #ffeb3b;
+    text-decoration: none;
+}
+
+.btg-modal-body {
+    padding: 25px;
+}
+
+.btg-form-group {
+    margin-bottom: 20px;
+}
+
+.btg-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.btg-form-group input,
+.btg-form-group select,
+.btg-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.btg-form-group input:focus,
+.btg-form-group select:focus,
+.btg-form-group textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.btg-form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.btg-form-row .btg-form-group {
+    flex: 1;
+}
+
+.btg-modal-footer {
+    padding: 20px 25px;
+    background-color: #f1f5f9;
+    border-radius: 0 0 8px 8px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.btg-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btg-btn-primary {
+    background-color: #3b82f6;
+    color: white;
+}
+
+.btg-btn-primary:hover {
+    background-color: #2563eb;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btg-btn-secondary {
+    background-color: #6b7280;
+    color: white;
+}
+
+.btg-btn-secondary:hover {
+    background-color: #4b5563;
+}
+
+.btg-btn-success {
+    background-color: #10b981;
+    color: white;
+}
+
+.btg-btn-success:hover {
+    background-color: #059669;
+}
+
+.btg-btn-danger {
+    background-color: #ef4444;
+    color: white;
+}
+
+.btg-btn-danger:hover {
+    background-color: #dc2626;
+}
+
+.btg-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btg-alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.btg-alert-success {
+    background-color: #d1fae5;
+    border: 1px solid #10b981;
+    color: #065f46;
+}
+
+.btg-alert-error {
+    background-color: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #991b1b;
+}
+
+.btg-alert-info {
+    background-color: #dbeafe;
+    border: 1px solid #3b82f6;
+    color: #1e40af;
+}
+
+.btg-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: btg-spin 1s linear infinite;
+}
+
+@keyframes btg-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.btg-ticket-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.btg-ticket-item {
+    background: white;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btg-ticket-item:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.btg-ticket-id {
+    font-weight: 700;
+    color: #1e3a8a;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.btg-ticket-info {
+    font-size: 13px;
+    color: #6b7280;
+    margin: 3px 0;
+}
+
+.btg-ticket-status {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+.btg-ticket-status.active {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.btg-ticket-status.closed {
+    background-color: #e5e7eb;
+    color: #374151;
+}
+
+.btg-required {
+    color: #ef4444;
+    margin-left: 2px;
+}
+
+.btg-help-text {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 4px;
+}

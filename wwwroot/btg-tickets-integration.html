@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integração BTG Tickets - SALAJuris</title>
+    <link rel="stylesheet" href="css/btg-tickets.css">
+</head>
+<body>
+    <!-- EXEMPLO DE INTEGRAÇÃO NO SALAJURIS -->
+    <!-- Copie este código para o seu sistema -->
+
+    <!-- Botão para abrir modal de criar ticket -->
+    <button onclick="abrirModalCriarTicket()" class="btg-btn btg-btn-primary">
+        📞 Criar Ticket BTG
+    </button>
+
+    <!-- Modal: Criar Ticket -->
+    <div id="modalCriarTicket" class="btg-modal">
+        <div class="btg-modal-content">
+            <div class="btg-modal-header">
+                <h3>Criar Ticket de Atendimento BTG</h3>
+                <button class="btg-close" onclick="fecharModal('modalCriarTicket')">&times;</button>
+            </div>
+            <div class="btg-modal-body">
+                <div id="alertContainer"></div>
+                
+                <form id="formCriarTicket" onsubmit="handleCriarTicket(event)">
+                    <div class="btg-form-group">
+                        <label>CPF/CNPJ <span class="btg-required">*</span></label>
+                        <input type="text" id="document" required maxlength="14" placeholder="00000000000">
+                        <div class="btg-help-text">Apenas números</div>
+                    </div>
+
+                    <div class="btg-form-row">
+                        <div class="btg-form-group">
+                            <label>DDD <span class="btg-required">*</span></label>
+                            <input type="text" id="phoneAreaCode" required maxlength="2" placeholder="11">
+                        </div>
+                        <div class="btg-form-group">
+                            <label>Telefone <span class="btg-required">*</span></label>
+                            <input type="text" id="phoneNumber" required maxlength="9" placeholder="987654321">
+                        </div>
+                    </div>
+
+                    <div class="btg-form-row">
+                        <div class="btg-form-group">
+                            <label>Canal <span class="btg-required">*</span></label>
+                            <select id="channel" required>
+                                <option value="">Selecione...</option>
+                                <option value="PHONE">Telefone</option>
+                                <option value="EMAIL">E-mail</option>
+                                <option value="CHAT">Chat</option>
+                                <option value="SMS">SMS</option>
+                            </select>
+                        </div>
+                        <div class="btg-form-group">
+                            <label>Tipo <span class="btg-required">*</span></label>
+                            <select id="type" required>
+                                <option value="">Selecione...</option>
+                                <option value="INBOUND">Entrada (Inbound)</option>
+                                <option value="OUTBOUND">Saída (Outbound)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="btg-modal-footer">
+                        <button type="button" onclick="fecharModal('modalCriarTicket')" class="btg-btn btg-btn-secondary">
+                            Cancelar
+                        </button>
+                        <button type="submit" id="btnSubmitTicket" class="btg-btn btg-btn-success">
+                            Criar Ticket
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Adicionar Contrato -->
+    <div id="modalAdicionarContrato" class="btg-modal">
+        <div class="btg-modal-content">
+            <div class="btg-modal-header">
+                <h3>Adicionar Contrato ao Ticket</h3>
+                <button class="btg-close" onclick="fecharModal('modalAdicionarContrato')">&times;</button>
+            </div>
+            <div class="btg-modal-body">
+                <div id="alertContainerContrato"></div>
+                
+                <form id="formAdicionarContrato" onsubmit="handleAdicionarContrato(event)">
+                    <div class="btg-form-group">
+                        <label>Ticket ID <span class="btg-required">*</span></label>
+                        <input type="text" id="contractTicketId" required placeholder="ID do ticket criado">
+                    </div>
+
+                    <div class="btg-form-group">
+                        <label>CPF/CNPJ <span class="btg-required">*</span></label>
+                        <input type="text" id="contractDocument" required maxlength="14" placeholder="00000000000">
+                    </div>
+
+                    <div class="btg-form-group">
+                        <label>Número do Contrato <span class="btg-required">*</span></label>
+                        <input type="text" id="contractNumber" required placeholder="Ex: 12345">
+                    </div>
+
+                    <div class="btg-form-row">
+                        <div class="btg-form-group">
+                            <label>Produto</label>
+                            <input type="text" id="product" placeholder="Ex: Cartão de Crédito">
+                        </div>
+                        <div class="btg-form-group">
+                            <label>Dias de Vencimento</label>
+                            <input type="number" id="dueDays" placeholder="Ex: 30">
+                        </div>
+                    </div>
+
+                    <div class="btg-form-group">
+                        <label>Código de Encerramento</label>
+                        <select id="terminationCode">
+                            <option value="">Selecione...</option>
+                            <option value="AE">AE - Acordo Efetuado</option>
+                            <option value="GA">GA - Garantia</option>
+                            <option value="TT">TT - Título Transferido</option>
+                            <option value="GB">GB - Garantia Bloqueada</option>
+                        </select>
+                    </div>
+
+                    <div class="btg-modal-footer">
+                        <button type="button" onclick="fecharModal('modalAdicionarContrato')" class="btg-btn btg-btn-secondary">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btg-btn btg-btn-success">
+                            Adicionar Contrato
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Encerrar Ticket -->
+    <div id="modalEncerrarTicket" class="btg-modal">
+        <div class="btg-modal-content">
+            <div class="btg-modal-header">
+                <h3>Encerrar Ticket</h3>
+                <button class="btg-close" onclick="fecharModal('modalEncerrarTicket')">&times;</button>
+            </div>
+            <div class="btg-modal-body">
+                <div id="alertContainerEncerrar"></div>
+                
+                <form id="formEncerrarTicket" onsubmit="handleEncerrarTicket(event)">
+                    <div class="btg-form-group">
+                        <label>Ticket ID <span class="btg-required">*</span></label>
+                        <input type="text" id="closeTicketId" required placeholder="ID do ticket">
+                    </div>
+
+                    <div class="btg-form-group">
+                        <label>CPF/CNPJ <span class="btg-required">*</span></label>
+                        <input type="text" id="closeDocument" required maxlength="14" placeholder="00000000000">
+                    </div>
+
+                    <div class="btg-form-group">
+                        <label>Informações Adicionais</label>
+                        <textarea id="additionalInfo" rows="3" placeholder="Observações sobre o encerramento"></textarea>
+                    </div>
+
+                    <div class="btg-form-row">
+                        <div class="btg-form-group">
+                            <label>Nome da Parte</label>
+                            <input type="text" id="partyName" placeholder="Nome completo">
+                        </div>
+                        <div class="btg-form-group">
+                            <label>E-mail</label>
+                            <input type="email" id="email" placeholder="email@exemplo.com">
+                        </div>
+                    </div>
+
+                    <div class="btg-modal-footer">
+                        <button type="button" onclick="fecharModal('modalEncerrarTicket')" class="btg-btn btg-btn-secondary">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btg-btn btg-btn-danger">
+                            Encerrar Ticket
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/btg-tickets-client.js"></script>
+    <script>
+        // Inicializar cliente BTG Tickets
+        const btgClient = new BTGTicketsClient({
+            apiBaseUrl: 'http://localhost:5000', // ALTERE para o URL do seu servidor
+            onError: function(message) {
+                showAlert(message, 'error');
+            },
+            onSuccess: function(message) {
+                showAlert(message, 'success');
+            }
+        });
+
+        // Armazenar tickets criados (simulação - em produção, salve no banco)
+        let ticketsCriados = [];
+
+        // Funções de controle de modais
+        function abrirModalCriarTicket() {
+            document.getElementById('modalCriarTicket').style.display = 'block';
+        }
+
+        function abrirModalAdicionarContrato() {
+            document.getElementById('modalAdicionarContrato').style.display = 'block';
+        }
+
+        function abrirModalEncerrarTicket() {
+            document.getElementById('modalEncerrarTicket').style.display = 'block';
+        }
+
+        function fecharModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            if (event.target.classList.contains('btg-modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Criar Ticket
+        async function handleCriarTicket(event) {
+            event.preventDefault();
+            
+            const btnSubmit = document.getElementById('btnSubmitTicket');
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '<span class="btg-loading"></span> Criando...';
+
+            try {
+                const ticketData = {
+                    document: document.getElementById('document').value,
+                    phoneAreaCode: document.getElementById('phoneAreaCode').value,
+                    phoneNumber: document.getElementById('phoneNumber').value,
+                    channel: document.getElementById('channel').value,
+                    type: document.getElementById('type').value
+                };
+
+                const result = await btgClient.criarTicket(ticketData);
+                
+                // Salvar ticket criado
+                ticketsCriados.push(result);
+                
+                showAlert(`Ticket criado com sucesso! ID: ${result.ticketId}`, 'success', 'alertContainer');
+                
+                // Limpar formulário
+                document.getElementById('formCriarTicket').reset();
+                
+                // Fechar modal após 2 segundos
+                setTimeout(() => {
+                    fecharModal('modalCriarTicket');
+                }, 2000);
+
+            } catch (error) {
+                showAlert('Erro ao criar ticket: ' + error.message, 'error', 'alertContainer');
+            } finally {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = 'Criar Ticket';
+            }
+        }
+
+        // Adicionar Contrato
+        async function handleAdicionarContrato(event) {
+            event.preventDefault();
+
+            try {
+                const contractData = {
+                    ticketId: document.getElementById('contractTicketId').value,
+                    document: document.getElementById('contractDocument').value,
+                    contractNumber: document.getElementById('contractNumber').value,
+                    product: document.getElementById('product').value,
+                    dueDays: document.getElementById('dueDays').value ? parseInt(document.getElementById('dueDays').value) : null,
+                    terminationCode: document.getElementById('terminationCode').value
+                };
+
+                await btgClient.adicionarContrato(contractData);
+                
+                showAlert('Contrato adicionado com sucesso!', 'success', 'alertContainerContrato');
+                
+                // Limpar formulário
+                document.getElementById('formAdicionarContrato').reset();
+                
+                setTimeout(() => {
+                    fecharModal('modalAdicionarContrato');
+                }, 2000);
+
+            } catch (error) {
+                showAlert('Erro ao adicionar contrato: ' + error.message, 'error', 'alertContainerContrato');
+            }
+        }
+
+        // Encerrar Ticket
+        async function handleEncerrarTicket(event) {
+            event.preventDefault();
+
+            try {
+                const closeData = {
+                    ticketId: document.getElementById('closeTicketId').value,
+                    document: document.getElementById('closeDocument').value,
+                    additionalInfo: document.getElementById('additionalInfo').value,
+                    partyName: document.getElementById('partyName').value,
+                    email: document.getElementById('email').value
+                };
+
+                await btgClient.encerrarTicket(closeData);
+                
+                showAlert('Ticket encerrado com sucesso!', 'success', 'alertContainerEncerrar');
+                
+                // Limpar formulário
+                document.getElementById('formEncerrarTicket').reset();
+                
+                setTimeout(() => {
+                    fecharModal('modalEncerrarTicket');
+                }, 2000);
+
+            } catch (error) {
+                showAlert('Erro ao encerrar ticket: ' + error.message, 'error', 'alertContainerEncerrar');
+            }
+        }
+
+        // Exibir alertas
+        function showAlert(message, type, containerId = 'alertContainer') {
+            const container = document.getElementById(containerId);
+            const alertClass = type === 'success' ? 'btg-alert-success' : type === 'error' ? 'btg-alert-error' : 'btg-alert-info';
+            
+            container.innerHTML = `
+                <div class="btg-alert ${alertClass}">
+                    ${message}
+                </div>
+            `;
+
+            // Auto-remover após 5 segundos
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        // Pré-autenticar ao carregar a página
+        window.addEventListener('DOMContentLoaded', async function() {
+            try {
+                await btgClient.autenticar();
+                console.log('Autenticado com sucesso na API BTG');
+            } catch (error) {
+                console.error('Erro ao autenticar:', error);
+            }
+        });
+    </script>
+
+    <!-- Exemplo de chamada no SALAJuris -->
+    <script>
+        // INTEGRAÇÃO COM SALAJURIS
+        // Cole estas funções no seu código JavaScript existente do SALAJuris
+
+        /*
+        // Exemplo: Criar ticket quando o usuário clicar em um botão no SALAJuris
+        function integrarComBTG(cpf, telefone, ddd) {
+            const ticketData = {
+                document: cpf,
+                phoneAreaCode: ddd,
+                phoneNumber: telefone,
+                channel: 'PHONE',
+                type: 'OUTBOUND'
+            };
+            
+            btgClient.criarTicket(ticketData)
+                .then(result => {
+                    console.log('Ticket BTG criado:', result.ticketId);
+                    // Aqui você pode salvar o ticketId no seu banco de dados do SALAJuris
+                    salvarTicketNoSistema(result.ticketId, cpf);
+                })
+                .catch(error => {
+                    console.error('Erro BTG:', error);
+                });
+        }
+
+        // Exemplo: Chamar a partir de um evento do SALAJuris
+        $('.btn-criar-ticket-btg').on('click', function() {
+            const cpf = $(this).data('cpf');
+            const telefone = $(this).data('telefone');
+            const ddd = $(this).data('ddd');
+            
+            integrarComBTG(cpf, telefone, ddd);
+        });
+        */
+    </script>
+</body>
+</html>
