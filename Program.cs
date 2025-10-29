@@ -44,8 +44,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Página padrão (redirecionar para index)
-app.MapGet("/", () => Results.Redirect("/index.html"));
+// Página padrão (redirecionar para integração NEON)
+app.MapGet("/", () => Results.Redirect("/integracao-neon-criar-tarefas.html"));
 
 app.MapControllers();
 

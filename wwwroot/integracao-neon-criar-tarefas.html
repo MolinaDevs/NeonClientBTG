@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integração BTG + NEON - Criar Tarefas</title>
+    <link rel="stylesheet" href="css/btg-tickets.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px 8px 0 0;
+            margin: -30px -30px 30px;
+        }
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            background: #f0f0f0;
+            margin: 0 5px;
+            border-radius: 5px;
+            position: relative;
+        }
+        .step.active {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+        }
+        .step.completed {
+            background: #10b981;
+            color: white;
+        }
+        .step-content {
+            display: none;
+        }
+        .step-content.active {
+            display: block;
+        }
+        .info-box {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .success-box {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .ticket-info {
+            background: #fef3c7;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Criar Tarefa com Ticket BTG</h1>
+            <p>Fluxo completo: Cliente → Ticket BTG → Tipo de Atendimento → Tarefa NEON</p>
+        </div>
+
+        <!-- Indicador de Passos -->
+        <div class="step-indicator">
+            <div class="step active" id="step1-indicator">
+                <div>1️⃣</div>
+                <div>Dados do Cliente</div>
+            </div>
+            <div class="step" id="step2-indicator">
+                <div>2️⃣</div>
+                <div>Ticket BTG</div>
+            </div>
+            <div class="step" id="step3-indicator">
+                <div>3️⃣</div>
+                <div>Tipo de Atendimento</div>
+            </div>
+            <div class="step" id="step4-indicator">
+                <div>4️⃣</div>
+                <div>Criar Tarefa</div>
+            </div>
+        </div>
+
+        <!-- PASSO 1: Dados do Cliente -->
+        <div class="step-content active" id="step1">
+            <h2>📋 Passo 1: Dados do Cliente</h2>
+            
+            <div class="info-box">
+                <strong>ℹ️ Informação:</strong> Estes dados geralmente já estão disponíveis no sistema NEON. 
+                Aqui é apenas para demonstração.
+            </div>
+
+            <form id="formCliente">
+                <div class="btg-form-group">
+                    <label>Nome do Cliente *</label>
+                    <input type="text" id="nomeCliente" required value="João da Silva">
+                </div>
+
+                <div class="btg-form-row">
+                    <div class="btg-form-group">
+                        <label>CPF/CNPJ *</label>
+                        <input type="text" id="cpfCliente" required value="12345678901" maxlength="14">
+                        <div class="btg-help-text">Apenas números</div>
+                    </div>
+                    <div class="btg-form-group">
+                        <label>Código do Cliente (NEON)</label>
+                        <input type="text" id="codigoCliente" value="CLI-001">
+                    </div>
+                </div>
+
+                <div class="btg-form-row">
+                    <div class="btg-form-group">
+                        <label>DDD *</label>
+                        <input type="text" id="dddCliente" required value="11" maxlength="2">
+                    </div>
+                    <div class="btg-form-group">
+                        <label>Telefone *</label>
+                        <input type="text" id="telefoneCliente" required value="987654321" maxlength="9">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="submit" class="btg-btn btg-btn-primary">
+                        Próximo: Criar Ticket BTG →
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- PASSO 2: Criar Ticket BTG -->
+        <div class="step-content" id="step2">
+            <h2>📞 Passo 2: Criar Ticket BTG</h2>
+
+            <div class="info-box">
+                <strong>ℹ️ Informação:</strong> O ticket será criado automaticamente com os dados do cliente.
+            </div>
+
+            <div id="clienteResumo" class="ticket-info"></div>
+
+            <form id="formTicketBTG">
+                <div class="btg-form-row">
+                    <div class="btg-form-group">
+                        <label>Canal de Atendimento *</label>
+                        <select id="canalAtendimento" required>
+                            <option value="">Selecione...</option>
+                            <option value="PHONE">Telefone</option>
+                            <option value="EMAIL">E-mail</option>
+                            <option value="CHAT">Chat</option>
+                            <option value="SMS">SMS</option>
+                            <option value="WHATSAPP">WhatsApp</option>
+                        </select>
+                    </div>
+                    <div class="btg-form-group">
+                        <label>Tipo de Chamada *</label>
+                        <select id="tipoChamada" required>
+                            <option value="">Selecione...</option>
+                            <option value="INBOUND">Entrada (Cliente ligou)</option>
+                            <option value="OUTBOUND">Saída (Nós ligamos)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btg-btn btg-btn-secondary" onclick="voltarPasso(1)">
+                        ← Voltar
+                    </button>
+                    <button type="submit" class="btg-btn btg-btn-success" id="btnCriarTicket">
+                        Criar Ticket BTG →
+                    </button>
+                </div>
+            </form>
+
+            <div id="ticketCriadoInfo"></div>
+        </div>
+
+        <!-- PASSO 3: Selecionar Tipo de Atendimento -->
+        <div class="step-content" id="step3">
+            <h2>🎯 Passo 3: Tipo de Atendimento Realizado</h2>
+
+            <div class="success-box">
+                <strong>✅ Ticket BTG Criado com Sucesso!</strong>
+                <div id="ticketIdDisplay"></div>
+            </div>
+
+            <div class="info-box">
+                <strong>ℹ️ Selecione o tipo de atendimento:</strong> 
+                Esta informação será salva junto com a tarefa no NEON.
+            </div>
+
+            <form id="formTipoAtendimento">
+                <div class="btg-form-group">
+                    <label>Tipo de Atendimento Realizado *</label>
+                    <select id="tipoAtendimento" required>
+                        <option value="">Selecione o tipo de atendimento...</option>
+                        <option value="ACORDO">Acordo Efetuado</option>
+                        <option value="PROMESSA">Promessa de Pagamento</option>
+                        <option value="NEGOCIACAO">Negociação em Andamento</option>
+                        <option value="CONTESTACAO">Contestação de Dívida</option>
+                        <option value="INFORMACAO">Solicitação de Informações</option>
+                        <option value="RECLAMACAO">Reclamação</option>
+                        <option value="SEM_CONTATO">Sem Contato</option>
+                        <option value="NUMERO_ERRADO">Número Errado</option>
+                        <option value="NAO_ACEITA">Não Aceita Negociação</option>
+                        <option value="RETORNO_SOLICITADO">Retorno Solicitado</option>
+                    </select>
+                </div>
+
+                <div class="btg-form-group">
+                    <label>Código de Encerramento BTG (opcional)</label>
+                    <select id="codigoEncerramento">
+                        <option value="">Não encerrar agora</option>
+                        <option value="AE">AE - Acordo Efetuado</option>
+                        <option value="GA">GA - Garantia</option>
+                        <option value="TT">TT - Título Transferido</option>
+                        <option value="GB">GB - Garantia Bloqueada</option>
+                        <option value="TW">TW - Título com WhatsApp</option>
+                    </select>
+                    <div class="btg-help-text">Se selecionar, o ticket BTG será encerrado</div>
+                </div>
+
+                <div class="btg-form-group">
+                    <label>Observações do Atendimento</label>
+                    <textarea id="observacoesAtendimento" rows="4" placeholder="Descreva o que foi tratado no atendimento..."></textarea>
+                </div>
+
+                <div class="btg-form-group">
+                    <label>Valor do Acordo (se aplicável)</label>
+                    <input type="text" id="valorAcordo" placeholder="R$ 0,00">
+                </div>
+
+                <div class="btg-form-group">
+                    <label>Data de Retorno (se necessário)</label>
+                    <input type="date" id="dataRetorno">
+                </div>
+
+                <div class="btn-group">
+                    <button type="button" class="btg-btn btg-btn-secondary" onclick="voltarPasso(2)">
+                        ← Voltar
+                    </button>
+                    <button type="submit" class="btg-btn btg-btn-success">
+                        Próximo: Criar Tarefa NEON →
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- PASSO 4: Criar Tarefa NEON -->
+        <div class="step-content" id="step4">
+            <h2>✅ Passo 4: Criar Tarefa no NEON</h2>
+
+            <div class="success-box">
+                <h3>🎉 Resumo Completo</h3>
+                <div id="resumoCompleto"></div>
+            </div>
+
+            <div class="info-box">
+                <strong>ℹ️ Próxima ação:</strong> 
+                Estes dados serão salvos no sistema NEON como uma nova tarefa.
+            </div>
+
+            <div id="dadosTarefaNeon" style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;"></div>
+
+            <div class="btn-group">
+                <button type="button" class="btg-btn btg-btn-secondary" onclick="voltarPasso(3)">
+                    ← Voltar
+                </button>
+                <button type="button" class="btg-btn btg-btn-success" onclick="salvarTarefaNeon()">
+                    💾 Salvar Tarefa no NEON
+                </button>
+                <button type="button" class="btg-btn btg-btn-primary" onclick="novoAtendimento()">
+                    🔄 Novo Atendimento
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/btg-tickets-client.js"></script>
+    <script>
+        // Inicializar cliente BTG
+        const btgClient = new BTGTicketsClient({
+            apiBaseUrl: 'http://localhost:5000'
+        });
+
+        // Dados do fluxo
+        let dadosFluxo = {
+            cliente: {},
+            ticketBTG: {},
+            atendimento: {},
+            tarefaNeon: {}
+        };
+
+        // Autenticar ao carregar
+        window.addEventListener('DOMContentLoaded', async function() {
+            try {
+                await btgClient.autenticar();
+                console.log('✅ Autenticado com BTG');
+            } catch (error) {
+                console.error('Erro ao autenticar:', error);
+            }
+        });
+
+        // ======== PASSO 1: Dados do Cliente ========
+        document.getElementById('formCliente').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            dadosFluxo.cliente = {
+                nome: document.getElementById('nomeCliente').value,
+                cpf: document.getElementById('cpfCliente').value,
+                codigo: document.getElementById('codigoCliente').value,
+                ddd: document.getElementById('dddCliente').value,
+                telefone: document.getElementById('telefoneCliente').value
+            };
+
+            // Mostrar resumo no passo 2
+            document.getElementById('clienteResumo').innerHTML = `
+                <strong>Cliente:</strong> ${dadosFluxo.cliente.nome}<br>
+                <strong>CPF:</strong> ${dadosFluxo.cliente.cpf}<br>
+                <strong>Telefone:</strong> (${dadosFluxo.cliente.ddd}) ${dadosFluxo.cliente.telefone}
+            `;
+
+            irParaPasso(2);
+        });
+
+        // ======== PASSO 2: Criar Ticket BTG ========
+        document.getElementById('formTicketBTG').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('btnCriarTicket');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="btg-loading"></span> Criando Ticket BTG...';
+
+            try {
+                const ticketData = {
+                    document: dadosFluxo.cliente.cpf,
+                    phoneAreaCode: dadosFluxo.cliente.ddd,
+                    phoneNumber: dadosFluxo.cliente.telefone,
+                    channel: document.getElementById('canalAtendimento').value,
+                    type: document.getElementById('tipoChamada').value
+                };
+
+                const result = await btgClient.criarTicket(ticketData);
+                
+                dadosFluxo.ticketBTG = {
+                    ticketId: result.ticketId,
+                    canal: ticketData.channel,
+                    tipo: ticketData.type,
+                    dataCriacao: new Date().toISOString()
+                };
+
+                document.getElementById('ticketIdDisplay').innerHTML = `
+                    <strong>Ticket ID:</strong> ${result.ticketId}<br>
+                    <strong>Canal:</strong> ${ticketData.channel}<br>
+                    <strong>Tipo:</strong> ${ticketData.type}
+                `;
+
+                irParaPasso(3);
+            } catch (error) {
+                alert('Erro ao criar ticket: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = 'Criar Ticket BTG →';
+            }
+        });
+
+        // ======== PASSO 3: Tipo de Atendimento ========
+        document.getElementById('formTipoAtendimento').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            dadosFluxo.atendimento = {
+                tipo: document.getElementById('tipoAtendimento').value,
+                tipoTexto: document.getElementById('tipoAtendimento').selectedOptions[0].text,
+                codigoEncerramento: document.getElementById('codigoEncerramento').value,
+                observacoes: document.getElementById('observacoesAtendimento').value,
+                valorAcordo: document.getElementById('valorAcordo').value,
+                dataRetorno: document.getElementById('dataRetorno').value
+            };
+
+            // Se selecionou código de encerramento, encerrar o ticket
+            if (dadosFluxo.atendimento.codigoEncerramento) {
+                try {
+                    await btgClient.encerrarTicket({
+                        ticketId: dadosFluxo.ticketBTG.ticketId,
+                        document: dadosFluxo.cliente.cpf,
+                        additionalInfo: dadosFluxo.atendimento.observacoes
+                    });
+                    dadosFluxo.ticketBTG.status = 'ENCERRADO';
+                } catch (error) {
+                    console.error('Erro ao encerrar ticket:', error);
+                }
+            }
+
+            montarResumoCompleto();
+            irParaPasso(4);
+        });
+
+        // ======== PASSO 4: Montar Resumo ========
+        function montarResumoCompleto() {
+            const resumo = `
+                <strong>📋 Cliente:</strong><br>
+                ${dadosFluxo.cliente.nome} | CPF: ${dadosFluxo.cliente.cpf}<br>
+                Tel: (${dadosFluxo.cliente.ddd}) ${dadosFluxo.cliente.telefone}<br><br>
+
+                <strong>📞 Ticket BTG:</strong><br>
+                ID: ${dadosFluxo.ticketBTG.ticketId}<br>
+                Canal: ${dadosFluxo.ticketBTG.canal} | Tipo: ${dadosFluxo.ticketBTG.tipo}<br>
+                Status: ${dadosFluxo.ticketBTG.status || 'ABERTO'}<br><br>
+
+                <strong>🎯 Atendimento:</strong><br>
+                Tipo: ${dadosFluxo.atendimento.tipoTexto}<br>
+                ${dadosFluxo.atendimento.valorAcordo ? 'Valor: ' + dadosFluxo.atendimento.valorAcordo + '<br>' : ''}
+                ${dadosFluxo.atendimento.dataRetorno ? 'Data Retorno: ' + dadosFluxo.atendimento.dataRetorno + '<br>' : ''}
+                ${dadosFluxo.atendimento.observacoes ? 'Obs: ' + dadosFluxo.atendimento.observacoes : ''}
+            `;
+
+            document.getElementById('resumoCompleto').innerHTML = resumo;
+
+            // Montar dados para o NEON
+            dadosFluxo.tarefaNeon = {
+                codigoCliente: dadosFluxo.cliente.codigo,
+                nomeCliente: dadosFluxo.cliente.nome,
+                cpfCliente: dadosFluxo.cliente.cpf,
+                ticketBTG: dadosFluxo.ticketBTG.ticketId,
+                tipoAtendimento: dadosFluxo.atendimento.tipo,
+                descricaoAtendimento: dadosFluxo.atendimento.tipoTexto,
+                canalAtendimento: dadosFluxo.ticketBTG.canal,
+                observacoes: dadosFluxo.atendimento.observacoes,
+                valorAcordo: dadosFluxo.atendimento.valorAcordo,
+                dataRetorno: dadosFluxo.atendimento.dataRetorno,
+                dataCriacao: new Date().toISOString(),
+                usuario: 'Operador NEON' // Substituir pelo usuário logado
+            };
+
+            // Mostrar JSON para o NEON
+            document.getElementById('dadosTarefaNeon').innerHTML = `
+                <strong>📊 Dados para salvar no NEON:</strong>
+                <pre style="background: white; padding: 15px; border-radius: 5px; overflow-x: auto;">${JSON.stringify(dadosFluxo.tarefaNeon, null, 2)}</pre>
+            `;
+        }
+
+        // ======== SALVAR NO NEON ========
+        function salvarTarefaNeon() {
+            // AQUI VOCÊ INTEGRARIA COM O NEON
+            // Exemplo de chamada AJAX para o NEON:
+            
+            /*
+            $.ajax({
+                url: '/api/neon/criar-tarefa',
+                method: 'POST',
+                data: dadosFluxo.tarefaNeon,
+                success: function(response) {
+                    alert('✅ Tarefa salva no NEON com sucesso!');
+                    console.log('ID da Tarefa NEON:', response.tarefaId);
+                },
+                error: function(error) {
+                    alert('❌ Erro ao salvar no NEON');
+                }
+            });
+            */
+
+            // Por enquanto, só mostrar mensagem
+            alert('✅ Tarefa salva no NEON com sucesso!\n\nDados salvos:\n' + JSON.stringify(dadosFluxo.tarefaNeon, null, 2));
+            console.log('Dados salvos no NEON:', dadosFluxo.tarefaNeon);
+        }
+
+        // ======== NAVEGAÇÃO ========
+        function irParaPasso(numeroPasso) {
+            // Esconder todos
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.step').forEach(el => {
+                el.classList.remove('active');
+                el.classList.remove('completed');
+            });
+
+            // Mostrar atual
+            document.getElementById('step' + numeroPasso).classList.add('active');
+            document.getElementById('step' + numeroPasso + '-indicator').classList.add('active');
+
+            // Marcar anteriores como completos
+            for (let i = 1; i < numeroPasso; i++) {
+                document.getElementById('step' + i + '-indicator').classList.add('completed');
+            }
+
+            // Scroll para o topo
+            window.scrollTo(0, 0);
+        }
+
+        function voltarPasso(numeroPasso) {
+            irParaPasso(numeroPasso);
+        }
+
+        function novoAtendimento() {
+            if (confirm('Deseja iniciar um novo atendimento?')) {
+                dadosFluxo = { cliente: {}, ticketBTG: {}, atendimento: {}, tarefaNeon: {} };
+                document.querySelectorAll('form').forEach(f => f.reset());
+                irParaPasso(1);
+            }
+        }
+    </script>
+</body>
+</html>
